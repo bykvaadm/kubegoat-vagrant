@@ -1,0 +1,22 @@
+- name: install git
+  apt: name=git
+
+- name: symlink helm2 -> helm
+  ansible.builtin.file:
+    src: /usr/local/bin/helm
+    dest: /usr/local/bin/helm2
+    state: link
+
+- name: clone kubegoat
+  ansible.builtin.git:
+    repo: https://github.com/madhuakula/kubernetes-goat.git
+    dest: /opt/kubegoat
+    accept_hostkey: yes
+
+- name: prepare kubegoat
+  shell: cd /opt/kubegoat && bash setup-kubernetes-goat.sh
+  register: result
+
+- name: prepare access to services
+  shell: cd /opt/kubegoat && bash access-kubernetes-goat.sh
+  register: result

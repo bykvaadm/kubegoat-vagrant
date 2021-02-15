@@ -1,0 +1,40 @@
+- hosts: kubernetes
+  become: yes
+  roles:
+  - docker
+  - kubernetes_repo
+
+- hosts: kubernetes-master
+  become: yes
+  roles:
+  - kubernetes_master
+  - calico
+
+- hosts: kubernetes-master
+  become: yes
+  pre_tasks:
+  - name: Create token
+    shell: kubeadm token create --print-join-command 2>/dev/null
+    register: token_create
+    changed_when: no
+    run_once: yes
+
+  - name: Join kubernetes
+    delegate_to: "{{ item }}"
+    shell: "{{ token_create.stdout | replace('10.0.2.15', '192.168.77.10') }}"
+    args:
+      creates: /etc/kubernetes/kubelet.conf
+    loop: "{{ groups['kubernetes-node'] }}"
+
+  - name: install helm v2
+    unarchive:
+      src: https://get.helm.sh/helm-v2.17.0-linux-amd64.tar.gz
+      dest: /usr/local/bin
+      remote_src: yes
+      extra_opts:
+      - --strip-components=1
+      - linux-amd64/helm
+      creates: /usr/local/bin/helm
+  roles:
+  - { role: kubegoat, tags: [kubegoat] }
+

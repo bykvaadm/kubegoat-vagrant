@@ -1,0 +1,48 @@
+- name: "stat of {{ admin_conf }}"
+  stat:
+    path: "{{ admin_conf }}"
+    get_attributes: no
+  register: admin_conf
+
+- name: Initialize master
+  command: "kubeadm init --pod-network-cidr={{ kubernetes_master_pod_subnet }} --apiserver-advertise-address={{ kubernetes_base_ip }} --apiserver-cert-extra-sans={{ ansible_default_ipv4.address }}"
+  args:
+    creates: "{{ admin_conf }}"
+  register: kubeadm
+  when: not admin_conf.stat.exists
+
+- block:
+  - name: Delete kubeconfig of admin
+    file: path={{ admin_conf }} state=absent
+
+  - name: Generate fixed kubeconfig of admin
+    command: kubeadm init phase kubeconfig admin
+  when: kubeadm.changed
+
+- name: Ensure pip package
+  package:
+    name:
+      - python3-pip
+      - python3-setuptools
+
+- name: upgrade pip3
+  pip:
+    name: pip
+    executable: pip3
+    extra_args: --upgrade
+
+- name: Ensure python3 modules
+  ignore_errors: yes
+  pip:
+    executable: pip3
+    name:
+      - openshift
+
+- name: ensure .kube directory
+  file:
+    path: /root/.kube
+    state: directory
+
+- name: copy admin.conf
+  command: cp /etc/kubernetes/admin.conf /root/.kube/config
+  changed_when: false
