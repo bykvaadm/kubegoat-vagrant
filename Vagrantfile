@@ -9,6 +9,14 @@ Vagrant.configure("2") do |config|
     vb.linked_clone = true
   end
 
+  ## additional vm for network hacking imitation if u need it
+  # config.vm.define "hacker" do |n|
+  #   n.vm.provider "virtualbox" do |r|
+  #     r.memory = "1024"
+  #     r.cpus = 1
+  #   end
+  # end
+
   config.vm.define "master" do |n|
     n.vm.provider "virtualbox" do |r|
       r.memory = "2048"
