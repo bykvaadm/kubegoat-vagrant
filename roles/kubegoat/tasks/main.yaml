@@ -14,9 +14,13 @@
     accept_hostkey: yes
 
 - name: prepare kubegoat
-  shell: cd /opt/kubegoat && bash setup-kubernetes-goat.sh
-  register: result
+  shell: cd /opt/kubegoat && chmod +x setup-kubernetes-goat.sh && bash setup-kubernetes-goat.sh
+  register: result_prepare
+
+- debug: var=result_prepare
 
 - name: prepare access to services
-  shell: cd /opt/kubegoat && bash access-kubernetes-goat.sh
-  register: result
+  shell: cd /opt/kubegoat && chmod +x access-kubernetes-goat.sh && bash access-kubernetes-goat.sh
+  register: result_access
+
+- debug: var=result_access
