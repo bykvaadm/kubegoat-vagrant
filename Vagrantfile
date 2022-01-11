@@ -24,21 +24,21 @@ Vagrant.configure("2") do |config|
     end
     n.vm.box = "ubuntu/bionic64"
     n.vm.hostname = "master"
-    n.vm.network "private_network", ip: "192.168.77.10"
-    n.vm.network "forwarded_port", guest: 1230, host: 1230, guest_ip: "192.168.77.10"
-    n.vm.network "forwarded_port", guest: 1231, host: 1231, guest_ip: "192.168.77.10"
-    n.vm.network "forwarded_port", guest: 1232, host: 1232, guest_ip: "192.168.77.10"
-    n.vm.network "forwarded_port", guest: 1233, host: 1233, guest_ip: "192.168.77.10"
-    n.vm.network "forwarded_port", guest: 1234, host: 1234, guest_ip: "192.168.77.10"
-    n.vm.network "forwarded_port", guest: 1235, host: 1235, guest_ip: "192.168.77.10"
-    n.vm.network "forwarded_port", guest: 1236, host: 1236, guest_ip: "192.168.77.10"
+    n.vm.network "private_network", ip: "192.168.56.10"
+    n.vm.network "forwarded_port", guest: 1230, host: 1230, guest_ip: "192.168.56.10"
+    n.vm.network "forwarded_port", guest: 1231, host: 1231, guest_ip: "192.168.56.10"
+    n.vm.network "forwarded_port", guest: 1232, host: 1232, guest_ip: "192.168.56.10"
+    n.vm.network "forwarded_port", guest: 1233, host: 1233, guest_ip: "192.168.56.10"
+    n.vm.network "forwarded_port", guest: 1234, host: 1234, guest_ip: "192.168.56.10"
+    n.vm.network "forwarded_port", guest: 1235, host: 1235, guest_ip: "192.168.56.10"
+    n.vm.network "forwarded_port", guest: 1236, host: 1236, guest_ip: "192.168.56.10"
   end
 
   N = 2
   (1..N).each do |machine_id|
     config.vm.define "node-#{machine_id}" do |n|
       n.vm.hostname = "node-#{machine_id}"
-      n.vm.network "private_network", ip: "192.168.77.#{20+machine_id}"
+      n.vm.network "private_network", ip: "192.168.56.#{20+machine_id}"
       n.vm.box = "ubuntu/bionic64"
 
       if machine_id == N
