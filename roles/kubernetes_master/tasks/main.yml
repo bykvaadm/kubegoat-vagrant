@@ -35,8 +35,9 @@
   ignore_errors: yes
   pip:
     executable: pip3
+    extra_args: --ignore-installed PyYAML
     name:
-      - openshift
+      - kubernetes
 
 - name: ensure .kube directory
   file:
